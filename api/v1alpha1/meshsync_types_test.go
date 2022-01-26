@@ -21,7 +21,7 @@ var _ = Describe("The test case for the meshsync CRDs", func() {
 	context := context.Background()
 
 	const (
-		URL          string = "https://layer5.io.com"
+		URL          string = "https://layer5.io"
 		str          string = "healthy"
 		Reason       string = "Testcase"
 		Message      string = "Message for testcase"
@@ -125,6 +125,11 @@ var _ = Describe("The test case for the meshsync CRDs", func() {
 
 			By("Just delete the CRDs resources")
 			err := k8sClient.Delete(context, meshSync)
+			Expect(err).NotTo(HaveOccurred())
+		})
+		It("Delete meshery namespace", func() {
+
+			err := k8sClient.Delete(context, ns)
 			Expect(err).NotTo(HaveOccurred())
 		})
 	})
