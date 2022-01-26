@@ -5,6 +5,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -37,8 +38,8 @@ var _ = Describe("The test case for the meshsync CRDs", func() {
 			Kind:       Kind,
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Namespace: "default",
-			Name:      "default",
+			Namespace: "meshery",
+			Name:      "meshery",
 		},
 		Spec: MeshSyncSpec{
 			Size: 2,
@@ -47,20 +48,27 @@ var _ = Describe("The test case for the meshsync CRDs", func() {
 					URL: URL,
 				},
 				Native: NativeMeshsyncBroker{
-					Namespace: "default",
-					Name:      "default",
+					Namespace: "meshery",
+					Name:      "meshery",
 				},
 			},
 		},
 	}
 
 	typeNamespace := types.NamespacedName{
-		Namespace: "default",
-		Name:      "default",
+		Namespace: "meshery",
+		Name:      "meshery",
 	}
-
 	Context("The CURD case for the meshsync CRDs", func() {
-
+		ns := &v1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "meshery",
+			},
+		}
+		It("Create meshery namespace", func() {
+			err := k8sClient.Create(context, ns)
+			Expect(err).NotTo(HaveOccurred())
+		})
 		It("The meshsync CRDs create acticity should be succeed", func() {
 			err := k8sClient.Create(context, meshSync)
 			Expect(err).NotTo(HaveOccurred())
